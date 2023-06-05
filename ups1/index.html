@@ -49,6 +49,9 @@
           width: 100%;
         }
 
+        .delay{
+          display:none;
+        }
     </style>
 
   </head>
@@ -65,23 +68,56 @@
             <img class="som" src="som.png">
 
             <!-- HOTMART - Upsell Widget -->
-            <div id="box_hotmart"></div>
-            <script src="https://pay.hotmart.com/assets/js/hotmart.upsell_checkout.js"></script>
+            <div class="delay">
+              <div id="box_hotmart"></div>
+              <script src="https://pay.hotmart.com/assets/js/hotmart.upsell_checkout.js"></script>
 
-            <script>
-            opts = {
-            key: 'USL-103573-313363-fe7f28d2bf50fbebfdabcc2f9732c439',
-            width: '650' ,
-            height: '420'
-            };
-            Upsell.Widget.show(opts);
-            </script>
-            <!-- HOTMART - Upsell Widget [end] -->
-
-            
+              <script>
+              opts = {
+              key: 'USL-103573-313363-fe7f28d2bf50fbebfdabcc2f9732c439',
+              width: '650' ,
+              height: '420'
+              };
+              Upsell.Widget.show(opts);
+              </script>
+              <!-- HOTMART - Upsell Widget [end] -->
+            </div>         
           </div>
         </div>
       </div>
     </header>
+    <script>
+      //Botão Sincronizado  
+      //-------------------------------------
+
+      const DELAY_TIME_IN_SECONDS = 180; //
+      const DELAY_ELEMENTS_CLASS = 'delay';
+
+       let player;
+      
+      function showElements(className, value) {
+          for (const element of document.getElementsByClassName(className)) {
+              element.style.display = value;
+          }
+      }
+      
+      function showElementsAfterDelay() {
+        const time = Math.floor(player.video.currentTime);
+        if (time >= DELAY_TIME_IN_SECONDS && player.paused == false) {
+          showElements(DELAY_ELEMENTS_CLASS, 'block');
+        }
+      }
+      
+      window.onload = () => {
+          showElements(DELAY_ELEMENTS_CLASS, 'none');
+          const addFunctionShowElementsAfterDelay = setInterval(() => {
+            if (window.smartplayer.instances[0].mounted) {
+              player = window.smartplayer.instances[0];
+              player.events.events.timeupdate.push(showElementsAfterDelay);
+              clearInterval(addFunctionShowElementsAfterDelay);
+            }
+          }, 100)
+      }
+    </script>
   </body>
 </html>
